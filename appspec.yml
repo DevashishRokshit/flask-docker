@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/flask-app
+
+hooks:
+  AfterInstall:
+    - location: startup.sh
+      timeout: 300
+      runas: root
+
