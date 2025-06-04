@@ -13,6 +13,9 @@ hooks:
     - location: scripts/install_codedeploy_agent.sh
       timeout: 300
       runas: root
+    - location: scripts/configure_cloudwatch.sh
+      timeout: 300
+      runas: root
 
   AfterInstall:
     - location: startup.sh
