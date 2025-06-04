@@ -5,8 +5,11 @@ files:
     destination: /home/ec2-user/flask-app
 
 hooks:
+  BeforeInstall:
+    - location: scripts/install_docker.sh
+      timeout: 300
+      runas: root
   AfterInstall:
     - location: startup.sh
       timeout: 300
       runas: root
-
