@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - master 
+      - master
 
 jobs:
   build:
@@ -19,11 +19,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker image with both tags
+      - name: Build Docker image
         run: |
-          docker build -t devashishrokshit/flask-app:${{ github.sha }} -t devashishrokshit/flask-app:latest .
+          docker build -t devashishrokshit/flask-app:${{ github.sha }} .
+          docker tag devashishrokshit/flask-app:${{ github.sha }} devashishrokshit/flask-app:latest
 
-      - name: Push image to Docker Hub
+      - name: Push Docker image
         run: |
           docker push devashishrokshit/flask-app:${{ github.sha }}
-	  docker push devashishrokshit/flask-app:latest
+          docker push devashishrokshit/flask-app:latest
+
