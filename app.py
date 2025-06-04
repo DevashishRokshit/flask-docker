@@ -5,8 +5,8 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return (
-        "✅ Flask App Deployed via Docker and GitHub Actions!!!\n"
-        "🔁 Automatically builds and pushes Docker images on code change.\n"
+        "✅ Flask App Deployed via Docker and GitHub Actions!!!<br>"
+        "🔁 Automatically builds and pushes Docker images on code change.<br>"
         "🚀 Running inside a container served via AWS ALB!"
     )
 
