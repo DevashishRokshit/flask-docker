@@ -358,9 +358,26 @@ Create a custom IAM policy named `TerraformIAMPolicy` with the following permiss
         "iam:RemoveRoleFromInstanceProfile"
       ],
       "Resource": "*"
+    },
+    {
+      "Sid": "DetachPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DetachRolePolicy"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DeleteIAMRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteRole"
+      ],
+      "Resource": "*"
     }
   ]
 }
+
 ```
 </details>
 
