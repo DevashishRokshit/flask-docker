@@ -243,139 +243,185 @@ Create a custom IAM policy named `TerraformIAMPolicy` with the following permiss
 
 ```json
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "EC2Full",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:*",
-        "elasticloadbalancing:*",
-        "autoscaling:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "RDS",
-      "Effect": "Allow",
-      "Action": [
-        "rds:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "CodeDeployAndS3",
-      "Effect": "Allow",
-      "Action": [
-        "codedeploy:*",
-        "s3:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "CloudWatchAndSNS",
-      "Effect": "Allow",
-      "Action": [
-        "cloudwatch:*",
-        "logs:*",
-        "sns:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "IAMScoped",
-      "Effect": "Allow",
-      "Action": [
-        "iam:Get*",
-        "iam:List*",
-        "iam:CreateRole",
-        "iam:AttachRolePolicy",
-        "iam:CreateInstanceProfile",
-        "iam:AddRoleToInstanceProfile"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "PassRolesForTerraform",
-      "Effect": "Allow",
-      "Action": "iam:PassRole",
-      "Resource": [
-        "arn:aws:iam::*:role/ec2-instance-role-codedeploy",
-        "arn:aws:iam::*:role/codedeploy-role",
-        "arn:aws:iam::*:role/*ssm-role*"
-      ],
-      "Condition": {
-        "StringEqualsIfExists": {
-          "iam:PassedToService": [
-            "ec2.amazonaws.com",
-            "codedeploy.amazonaws.com",
-            "autoscaling.amazonaws.com"
-          ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EC2Full",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*",
+                "elasticloadbalancing:*",
+                "autoscaling:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "RDS",
+            "Effect": "Allow",
+            "Action": [
+                "rds:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "CodeDeployAndS3",
+            "Effect": "Allow",
+            "Action": [
+                "codedeploy:*",
+                "s3:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "CloudWatchAndSNS",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:*",
+                "logs:*",
+                "sns:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "IAMScoped",
+            "Effect": "Allow",
+            "Action": [
+                "iam:Get*",
+                "iam:List*",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "iam:CreateInstanceProfile",
+                "iam:AddRoleToInstanceProfile"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "PassRolesForTerraform",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": [
+                "arn:aws:iam::*:role/ec2-instance-role-codedeploy",
+                "arn:aws:iam::*:role/codedeploy-role",
+                "arn:aws:iam::*:role/*ssm-role*"
+            ],
+            "Condition": {
+                "StringEqualsIfExists": {
+                    "iam:PassedToService": [
+                        "ec2.amazonaws.com",
+                        "codedeploy.amazonaws.com",
+                        "autoscaling.amazonaws.com"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "CreateServiceLinkedRoles",
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "*",
+            "Condition": {
+                "StringLike": {
+                    "iam:AWSServiceName": [
+                        "autoscaling.amazonaws.com",
+                        "codedeploy.amazonaws.com",
+                        "elasticloadbalancing.amazonaws.com",
+                        "rds.amazonaws.com"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "SSMAccess",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:*",
+                "ssmmessages:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "CodePipelineFullAccess",
+            "Effect": "Allow",
+            "Action": [
+                "codepipeline:*",
+                "codebuild:*",
+                "codestar-connections:*",
+                "iam:PassRole"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "IAMInstanceProfileManagement",
+            "Effect": "Allow",
+            "Action": [
+                "iam:DeleteInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DetachPolicy",
+            "Effect": "Allow",
+            "Action": [
+                "iam:DetachRolePolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DeleteIAMRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:DeleteRole"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DisassociateAndReleaseEIP",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DisassociateAddress",
+                "ec2:ReleaseAddress"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DeleteSecurityGroupAndENI",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DeleteSecurityGroup",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DetachNetworkInterface"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DeleteSubnetAndRoute",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DeleteSubnet",
+                "ec2:DeleteRoute",
+                "ec2:DeleteRouteTable",
+                "ec2:DisassociateRouteTable"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DeleteNATGateway",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DeleteNatGateway"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DeleteDBSubnetGroup",
+            "Effect": "Allow",
+            "Action": [
+                "rds:DeleteDBSubnetGroup"
+            ],
+            "Resource": "*"
         }
-      }
-    },
-    {
-      "Sid": "CreateServiceLinkedRoles",
-      "Effect": "Allow",
-      "Action": "iam:CreateServiceLinkedRole",
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "iam:AWSServiceName": [
-            "autoscaling.amazonaws.com",
-            "codedeploy.amazonaws.com",
-            "elasticloadbalancing.amazonaws.com",
-            "rds.amazonaws.com"
-          ]
-        }
-      }
-    },
-    {
-      "Sid": "SSMAccess",
-      "Effect": "Allow",
-      "Action": [
-        "ssm:*",
-        "ssmmessages:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "CodePipelineFullAccess",
-      "Effect": "Allow",
-      "Action": [
-        "codepipeline:*",
-        "codebuild:*",
-        "codestar-connections:*",
-        "iam:PassRole"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "IAMInstanceProfileManagement",
-      "Effect": "Allow",
-      "Action": [
-        "iam:DeleteInstanceProfile",
-        "iam:RemoveRoleFromInstanceProfile"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "DetachPolicy",
-      "Effect": "Allow",
-      "Action": [
-        "iam:DetachRolePolicy"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "DeleteIAMRoles",
-      "Effect": "Allow",
-      "Action": [
-        "iam:DeleteRole"
-      ],
-      "Resource": "*"
-    }
-  ]
+    ]
 }
 
 ```
